@@ -1,0 +1,30 @@
+# TEEHR Evaluation System - Notebook Dependencies (Python 3.10 compatible)
+
+# Core PySpark and Iceberg requirements
+pyspark==4.0.0
+findspark>=2.0.0
+
+# Apache Iceberg Python client
+pyiceberg>=0.6.0
+
+# AWS SDK and data tools
+boto3>=1.34.0
+awswrangler>=3.5.0
+
+# Data science and visualization (core essentials first)
+pandas>=2.0.0,<2.3.0
+numpy>=1.24.0,<2.0.0
+matplotlib>=3.7.0
+plotly>=5.17.0
+seaborn>=0.12.0
+
+# Jupyter notebook support
+ipykernel>=6.25.0
+jupyter>=1.0.0
+
+# Additional utilities
+requests>=2.31.0
+python-dotenv>=1.0.0
+
+# Note: TEEHR package will be installed separately if needed
+# due to complex dependency resolution issues
