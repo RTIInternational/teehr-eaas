@@ -39,6 +39,8 @@ resource "aws_security_group" "catalog_db" {
 resource "random_password" "catalog_db_password" {
   length  = 32
   special = true
+  # Exclude characters that RDS doesn't allow: / @ " and space
+  override_special = "!#$%&*()-_=+[]{}<>:?"
 }
 
 # Store password in AWS Secrets Manager
@@ -149,6 +151,7 @@ resource "aws_security_group_rule" "ecs_egress_all" {
 resource "aws_ecr_repository" "iceberg_catalog" {
   name                 = "${var.environment}-${var.project_name}/iceberg-rest-catalog"
   image_tag_mutability = "MUTABLE"
+  force_delete         = true
 
   image_scanning_configuration {
     scan_on_push = true
@@ -202,7 +205,7 @@ resource "aws_ecs_task_definition" "iceberg_catalog" {
         },
         {
           name  = "CATALOG_URI"
-          value = "jdbc:postgresql://${aws_db_instance.catalog_db.endpoint}:5432/iceberg_catalog"
+          value = "jdbc:postgresql://${aws_db_instance.catalog_db.endpoint}/iceberg_catalog"
         }
       ]
 
@@ -258,7 +261,7 @@ resource "aws_secretsmanager_secret" "catalog_db_url" {
 
 resource "aws_secretsmanager_secret_version" "catalog_db_url" {
   secret_id     = aws_secretsmanager_secret.catalog_db_url.id
-  secret_string = "jdbc:postgresql://${aws_db_instance.catalog_db.endpoint}:5432/iceberg_catalog"
+  secret_string = "jdbc:postgresql://${aws_db_instance.catalog_db.endpoint}/iceberg_catalog"
 }
 
 resource "aws_secretsmanager_secret" "catalog_db_user" {

@@ -31,9 +31,26 @@ def create_catalog_connection(environment: str):
             "warehouse": "s3://test-warehouse/",
         }
     else:
-        # For AWS environments - these would come from Terraform outputs
+        # For AWS environments - get endpoint from Terraform outputs
+        import subprocess
+        import json
+        
+        try:
+            # Get the catalog endpoint from terraform output
+            tf_output = subprocess.run(
+                ["terraform", "output", "-json", "catalog_endpoint"],
+                cwd="infrastructure/environments/dev",
+                capture_output=True,
+                text=True,
+                check=True
+            )
+            catalog_uri = json.loads(tf_output.stdout)
+        except subprocess.CalledProcessError:
+            # Fallback to hardcoded endpoint if terraform output fails
+            catalog_uri = f"http://{environment}-teehr-sys-iceberg-alb-2105268770.us-east-2.elb.amazonaws.com"
+        
         catalog_config = {
-            "uri": f"http://{environment}-teehr-sys-iceberg-alb-1831820261.us-east-2.elb.amazonaws.com",
+            "uri": catalog_uri,
             "credential": "client-credentials", 
             "warehouse": f"s3://{environment}-teehr-sys-iceberg-warehouse/warehouse/",
         }
@@ -176,5 +193,5 @@ def list():
 
 
 if __name__ == "__main__":
-    # exit(main())
-    exit(list())
+    exit(main())
+    # exit(list())

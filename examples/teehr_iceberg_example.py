@@ -72,7 +72,7 @@ def get_terraform_outputs() -> Tuple[str, str]:
     except Exception as e:
         print(f"⚠️ Could not get terraform outputs: {e}")
         # Fallback to your deployed endpoints
-        catalog_uri = "http://dev-teehr-sys-iceberg-alb-1831820261.us-east-2.elb.amazonaws.com"
+        catalog_uri = "http://dev-teehr-sys-iceberg-alb-2105268770.us-east-2.elb.amazonaws.com"
         warehouse_location = "s3://dev-teehr-sys-iceberg-warehouse/warehouse/"
         return catalog_uri, warehouse_location
 
@@ -137,6 +137,8 @@ def create_spark_session_for_iceberg(catalog_uri: str, warehouse_location: str) 
             .config("spark.sql.catalog.iceberg.warehouse", warehouse_location) \
             .config("spark.sql.catalog.iceberg.io-impl", "org.apache.iceberg.aws.s3.S3FileIO") \
             .config("spark.sql.extensions", "org.apache.iceberg.spark.extensions.IcebergSparkSessionExtensions") \
+            .config("spark.hadoop.fs.s3a.aws.credentials.provider", 
+                "com.amazonaws.auth.DefaultAWSCredentialsProviderChain") \
             .getOrCreate()
         
         print(f"✅ Created Spark {spark.version} session with Iceberg support")

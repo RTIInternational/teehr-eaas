@@ -1,6 +1,7 @@
 # Iceberg Data Lake S3 Infrastructure
 resource "aws_s3_bucket" "iceberg_warehouse" {
-  bucket = "${var.environment}-${var.project_name}-iceberg-warehouse"
+  bucket        = "${var.environment}-${var.project_name}-iceberg-warehouse"
+  force_destroy = true
 
   tags = {
     Name        = "Iceberg Warehouse"
