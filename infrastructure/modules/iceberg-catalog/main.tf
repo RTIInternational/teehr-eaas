@@ -1,5 +1,5 @@
 # RDS PostgreSQL for Iceberg catalog metadata
-resource "aws_db_subnet_group" "catalog_db" {
+resource "aws_db_subnet_group" "main" {
   name       = "${var.environment}-${var.project_name}-catalog-db-subnet-group"
   subnet_ids = var.database_subnet_ids
 
@@ -14,11 +14,21 @@ resource "aws_security_group" "catalog_db" {
   name_prefix = "${var.environment}-${var.project_name}-catalog-db-"
   vpc_id      = var.vpc_id
 
+  # Allow access from ECS service
   ingress {
     from_port       = 5432
     to_port         = 5432
     protocol        = "tcp"
     security_groups = [aws_security_group.catalog_service.id]
+  }
+
+  # Allow public access for development (restrict this in production!)
+  ingress {
+    from_port   = 5432
+    to_port     = 5432
+    protocol    = "tcp"
+    cidr_blocks = var.environment == "dev" ? ["0.0.0.0/0"] : []
+    description = "Public PostgreSQL access for development"
   }
 
   egress {
@@ -77,7 +87,10 @@ resource "aws_db_instance" "catalog_db" {
   password = random_password.catalog_db_password.result
 
   vpc_security_group_ids = [aws_security_group.catalog_db.id]
-  db_subnet_group_name   = aws_db_subnet_group.catalog_db.name
+  db_subnet_group_name   = aws_db_subnet_group.main.name
+
+  # Make publicly accessible for development
+  publicly_accessible = var.environment == "dev"
 
   backup_retention_period = var.backup_retention_period
   backup_window          = "03:00-04:00"
