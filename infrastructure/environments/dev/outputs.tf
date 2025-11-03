@@ -42,3 +42,24 @@ output "ecr_repository_url" {
   description = "ECR repository URL for the catalog image"
   value       = module.iceberg_catalog.ecr_repository_url
 }
+
+# Trino outputs
+output "trino_coordinator_endpoint" {
+  description = "Endpoint for the Trino coordinator"
+  value       = module.trino.trino_endpoint_url
+}
+
+output "trino_cluster_name" {
+  description = "Name of the Trino ECS cluster"
+  value       = module.trino.trino_cluster_name
+}
+
+output "trino_coordinator_service_name" {
+  description = "Name of the Trino coordinator ECS service"
+  value       = module.trino.coordinator_service_name
+}
+
+output "trino_worker_service_name" {
+  description = "Name of the Trino worker ECS service"
+  value       = module.trino.worker_service_name
+}

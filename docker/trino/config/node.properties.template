@@ -1,0 +1,3 @@
+node.environment=${TRINO_ENVIRONMENT}
+node.id=${TRINO_NODE_ID}
+node.data-dir=/data/trino

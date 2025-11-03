@@ -1,0 +1,5 @@
+connector.name=iceberg
+iceberg.catalog.type=rest
+iceberg.rest-catalog.uri=${ICEBERG_REST_URI}
+iceberg.rest-catalog.warehouse=${S3_WAREHOUSE_URI}
+iceberg.rest-catalog.security=NONE

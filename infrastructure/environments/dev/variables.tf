@@ -48,3 +48,40 @@ variable "catalog_service_desired_count" {
   type        = number
   default     = 1
 }
+
+# Trino variables
+variable "trino_coordinator_cpu" {
+  description = "CPU units for Trino coordinator (1024 = 1 vCPU)"
+  type        = number
+  default     = 2048  # 2 vCPU for dev
+}
+
+variable "trino_coordinator_memory" {
+  description = "Memory for Trino coordinator in MiB"
+  type        = number
+  default     = 8192  # 8 GB for dev
+}
+
+variable "trino_worker_cpu" {
+  description = "CPU units for Trino workers (1024 = 1 vCPU)"
+  type        = number
+  default     = 4096  # 4 vCPU for dev
+}
+
+variable "trino_worker_memory" {
+  description = "Memory for Trino workers in MiB"
+  type        = number
+  default     = 16384  # 16 GB for dev
+}
+
+variable "trino_worker_desired_count" {
+  description = "Desired number of Trino worker instances"
+  type        = number
+  default     = 2  # Start with 2 workers for dev
+}
+
+variable "trino_enable_auto_scaling" {
+  description = "Enable auto-scaling for Trino workers"
+  type        = bool
+  default     = true
+}
